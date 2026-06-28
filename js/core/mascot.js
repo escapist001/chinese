@@ -81,30 +81,38 @@ CN.mascot = (function () {
   let zone, insts = [], greeted = false, secretIdx = 0;
 
   /* ── SVG-питомцы (запасной вариант, если нет картинки) ── */
+  // Люся — чёрно-белая кошка «в смокинге» (по реальным фото)
   function catSVG() {
     return `<svg class="pet-svg pet-cat" viewBox="0 0 100 100" aria-hidden="true">
-      <path class="cat-ear" d="M22 42 L28 14 L45 35 Z"/><path class="cat-ear" d="M78 42 L72 14 L55 35 Z"/>
-      <path class="cat-ear-in" d="M28 38 L31 22 L40 34 Z"/><path class="cat-ear-in" d="M72 38 L69 22 L60 34 Z"/>
-      <ellipse class="cat-fur" cx="50" cy="58" rx="34" ry="30"/>
-      <ellipse class="cat-cheek" cx="50" cy="66" rx="21" ry="14"/>
-      <ellipse class="pet-eye cat-eye" cx="38" cy="55" rx="3.4" ry="5.2"/><ellipse class="pet-eye cat-eye" cx="62" cy="55" rx="3.4" ry="5.2"/>
-      <circle class="pet-shine" cx="39.3" cy="53" r="1.1"/><circle class="pet-shine" cx="63.3" cy="53" r="1.1"/>
-      <path class="cat-nose" d="M47 64 L53 64 L50 68 Z"/>
-      <path class="cat-mouth" d="M50 68 q-4 5 -9 3 M50 68 q4 5 9 3"/>
-      <g class="cat-whisker"><line x1="19" y1="60" x2="35" y2="62"/><line x1="19" y1="66" x2="35" y2="66"/><line x1="81" y1="60" x2="65" y2="62"/><line x1="81" y1="66" x2="65" y2="66"/></g>
+      <path class="cat-white" d="M33 84 Q50 70 67 84 L67 100 L33 100 Z"/>
+      <path class="cat-fur cat-ear" d="M21 44 L27 12 L47 36 Z"/><path class="cat-fur cat-ear" d="M79 44 L73 12 L53 36 Z"/>
+      <path class="cat-ear-in" d="M28 40 L31 21 L42 35 Z"/><path class="cat-ear-in" d="M72 40 L69 21 L58 35 Z"/>
+      <ellipse class="cat-fur" cx="50" cy="55" rx="33" ry="30"/>
+      <ellipse class="cat-muzzle" cx="50" cy="64" rx="17" ry="14"/>
+      <ellipse class="cat-white" cx="50" cy="72" rx="8.5" ry="5.5"/>
+      <ellipse class="pet-eye cat-eye" cx="38" cy="53" rx="4" ry="5.4"/><ellipse class="pet-eye cat-eye" cx="62" cy="53" rx="4" ry="5.4"/>
+      <ellipse class="cat-pupil" cx="38" cy="53" rx="1.5" ry="4.3"/><ellipse class="cat-pupil" cx="62" cy="53" rx="1.5" ry="4.3"/>
+      <circle class="pet-shine" cx="39.5" cy="51" r="1.1"/><circle class="pet-shine" cx="63.5" cy="51" r="1.1"/>
+      <path class="cat-nose" d="M46.5 60 L53.5 60 L50 64 Z"/>
+      <path class="cat-mouth" d="M50 64 L50 67 M50 67 q-4 4 -8 2 M50 67 q4 4 8 2"/>
+      <g class="cat-whisker"><line x1="17" y1="61" x2="34" y2="63"/><line x1="17" y1="67" x2="34" y2="67"/><line x1="83" y1="61" x2="66" y2="63"/><line x1="83" y1="67" x2="66" y2="67"/></g>
     </svg>`;
   }
+  // Рада — кудрявая кремовая собачка-дудл (по реальным фото)
   function dogSVG() {
     return `<svg class="pet-svg pet-dog" viewBox="0 0 100 100" aria-hidden="true">
-      <ellipse class="dog-ear" cx="19" cy="52" rx="11" ry="21" transform="rotate(-18 19 52)"/>
-      <ellipse class="dog-ear" cx="81" cy="52" rx="11" ry="21" transform="rotate(18 81 52)"/>
-      <ellipse class="dog-fur" cx="50" cy="54" rx="33" ry="30"/>
-      <ellipse class="dog-muzzle" cx="50" cy="66" rx="20" ry="16"/>
-      <circle class="pet-eye dog-eye" cx="38" cy="50" r="3.6"/><circle class="pet-eye dog-eye" cx="62" cy="50" r="3.6"/>
-      <circle class="pet-shine" cx="39.3" cy="48.6" r="1.1"/><circle class="pet-shine" cx="63.3" cy="48.6" r="1.1"/>
-      <ellipse class="dog-nose" cx="50" cy="62" rx="5" ry="3.6"/>
-      <path class="dog-mouth" d="M50 66 q-6 6 -11 2 M50 66 q6 6 11 2"/>
-      <path class="dog-tongue" d="M46 69 q4 7 8 0 Z"/>
+      <g class="dog-ear"><circle cx="20" cy="50" r="11"/><circle cx="15" cy="61" r="9.5"/><circle cx="22" cy="70" r="8"/>
+        <circle cx="80" cy="50" r="11"/><circle cx="85" cy="61" r="9.5"/><circle cx="78" cy="70" r="8"/></g>
+      <ellipse class="dog-fur" cx="50" cy="53" rx="31" ry="29"/>
+      <g class="dog-fur"><circle cx="50" cy="16" r="8"/><circle cx="31" cy="29" r="10"/><circle cx="43" cy="21" r="10"/><circle cx="57" cy="21" r="10"/><circle cx="69" cy="29" r="10"/>
+        <circle cx="23" cy="44" r="9"/><circle cx="77" cy="44" r="9"/><circle cx="24" cy="58" r="9"/><circle cx="76" cy="58" r="9"/>
+        <circle cx="33" cy="70" r="9"/><circle cx="67" cy="70" r="9"/><circle cx="50" cy="75" r="9"/></g>
+      <ellipse class="dog-muzzle" cx="50" cy="63" rx="15" ry="12"/>
+      <circle class="pet-eye dog-eye" cx="39" cy="49" r="3.8"/><circle class="pet-eye dog-eye" cx="61" cy="49" r="3.8"/>
+      <circle class="pet-shine" cx="40.3" cy="47.6" r="1.1"/><circle class="pet-shine" cx="62.3" cy="47.6" r="1.1"/>
+      <ellipse class="dog-nose" cx="50" cy="59" rx="5.4" ry="3.9"/>
+      <path class="dog-mouth" d="M50 63 q-6 6 -11 2 M50 63 q6 6 11 2"/>
+      <path class="dog-tongue" d="M47 66 q3 6 6 0 Z"/>
     </svg>`;
   }
   function pandaSVG() {

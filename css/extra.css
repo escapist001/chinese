@@ -33,21 +33,26 @@
 .pet.blink .pet-eye { transform: scaleY(.12); }
 .pet.blink .pet-shine { opacity: 0; }
 
-/* Люся 🐱 (цвета можно поменять под реальную Люсю) */
-.cat-fur { fill: #9c958c; }            /* шёрстка */
-.cat-cheek { fill: #cfc8bd; }          /* светлая мордочка */
-.cat-ear { fill: #9c958c; } .cat-ear-in { fill: #e9a8b0; }
-.cat-eye { fill: #3a7d4a; }            /* зелёные глазки */
-.cat-nose { fill: #e58fa0; }
-.cat-mouth { stroke: #5a544c; stroke-width: 2; fill: none; stroke-linecap: round; }
-.cat-whisker line { stroke: #b9b3aa; stroke-width: 1.4; stroke-linecap: round; }
+/* Люся 🐱 — чёрно-белая «в смокинге» (по фото). Светлая обводка — чтобы
+   чёрная кошка была видна и в ночной теме. */
+.cat-fur { fill: #211f1a; stroke: rgba(228,228,224,.22); stroke-width: 1.1; }
+.cat-muzzle { fill: #2e2a25; }
+.cat-ear-in { fill: #6e4a4c; }
+.cat-white { fill: #f3efe7; }          /* подбородок и грудка */
+.cat-eye { fill: #cbd24c; }            /* жёлто-зелёные глаза */
+.cat-pupil { fill: #21341b; }
+.cat-nose { fill: #16120f; }
+.cat-mouth { stroke: #d9d2c6; stroke-width: 1.5; fill: none; stroke-linecap: round; }
+.cat-whisker line { stroke: #ece9e2; stroke-width: 1.2; stroke-linecap: round; }
 
-/* Рада 🐶 (цвета можно поменять под реальную Раду) */
-.dog-fur { fill: #d9a45b; } .dog-muzzle { fill: #f0dcc0; } .dog-ear { fill: #c2883f; }
-.dog-eye { fill: #2b2620; }
-.dog-nose { fill: #3a2e26; }
-.dog-mouth { stroke: #5a473a; stroke-width: 2; fill: none; stroke-linecap: round; }
-.dog-tongue { fill: #e98a96; }
+/* Рада 🐶 — кудрявая кремовая (по фото) */
+.dog-fur { fill: #ecd6ac; }
+.dog-ear circle { fill: #d9b27e; }     /* кудрявые ушки чуть рыжее */
+.dog-muzzle { fill: #f5e8ce; }
+.dog-eye { fill: #9c6a2c; }            /* янтарные глаза */
+.dog-nose { fill: #b07c6a; }           /* розово-коричневый нос */
+.dog-mouth { stroke: #6e5238; stroke-width: 1.7; fill: none; stroke-linecap: round; }
+.dog-tongue { fill: #ef98a4; }
 
 .pet.happy .pet-art { animation: petHappy .7s ease; }
 @keyframes petHappy { 0% { transform: translateY(0); } 30% { transform: translateY(-12px) rotate(-6deg); }

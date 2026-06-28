@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# личные фото-референсы питомцев — НЕ публиковать
+pets_preview/
+_pettest.html
+_gardentest.html
