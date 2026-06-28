@@ -28,6 +28,8 @@
   R.add('profile', 'profile');
   R.add('favorites', 'favorites');
   R.add('decks', 'decks');
+  R.add('garden', 'garden');
+  R.add('etymology', 'etymology');
   R.add('search', 'search');
   R.add('settings', 'settings');
 
@@ -67,6 +69,20 @@
   // тема (день/ночь) и пользовательские настройки отображения
   CN.theme.init();
   if (CN.applyPrefs) CN.applyPrefs();
+  if (CN.mascot) CN.mascot.init();           // питомец-компаньон 🐼
+
+  // повышение уровня — лепестки + тост-поздравление
+  document.addEventListener('cn:levelup', (e) => {
+    if (CN.fx) CN.fx.petals({ count: 30 });
+    if (CN.c) CN.c.toast('Новый уровень: ' + (e.detail.level || '') + '! 🎉', 'gold');
+  });
+
+  // мягкое появление секций при заходе на экран
+  document.addEventListener('cn:rendered', () => {
+    if (CN.fx && CN.fx.reduced && CN.fx.reduced()) return;
+    const secs = CN.u.$$('#app .view > section, #app .view > .name-card');
+    secs.forEach((s, i) => { s.classList.add('reveal'); setTimeout(() => s.classList.add('reveal-in'), 40 + i * 70); });
+  });
 
   // бейдж серии дней в шапке — обновляем после каждой отрисовки
   function refreshStreak() {

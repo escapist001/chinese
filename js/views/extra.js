@@ -68,6 +68,12 @@ CN.views.settings = function () {
     e.currentTarget.textContent = ''; e.currentTarget.append(icon('book'), v === 'l' ? 'Крупные' : 'Обычные'); } },
     [ icon('book'), s.hanziSize === 'l' ? 'Крупные' : 'Обычные' ]);
 
+  // питомец-компаньон 🐼
+  const petBtn = el('button', { class: 'btn btn-ghost', onclick: (e) => {
+    const v = !(s.pet !== false); st.setSetting('pet', v); if (CN.mascot) CN.mascot.refresh();
+    e.currentTarget.textContent = ''; e.currentTarget.append(icon(v ? 'check' : 'close'), v ? 'Показан 🐼' : 'Скрыт'); } },
+    [ icon(s.pet === false ? 'close' : 'check'), s.pet === false ? 'Скрыт' : 'Показан 🐼' ]);
+
   wrap.append(el('div', { class: 'settings-list' }, [
     row('speaker', 'Скорость озвучки', el('div', { class: 'set-speed' }, [ presets,
       el('div', { class: 'set-inline' }, [ rate, rateVal ]) ])),
@@ -75,6 +81,7 @@ CN.views.settings = function () {
     row('moon', 'Оформление', themeBtn),
     row('book', 'Пиньинь под словами', pinBtn),
     row('book', 'Размер иероглифов', sizeBtn),
+    row('star', 'Питомец-компаньон', petBtn),
     row('speaker', 'Живой голос', el('span', {}, CN.audio.voiceCount
       ? `${CN.audio.voiceCount} фраз озвучены носителем` + (CN.audio.available() ? '' : '')
       : (CN.audio.available() ? 'системный голос' : 'недоступна'))),

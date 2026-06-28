@@ -1,0 +1,156 @@
+/* ============================================================
+   extra.css — новые фишки: питомец 🐼, китайское имя, печенье
+   с предсказанием, сад знаний 🌳, происхождение иероглифов,
+   мягкое появление секций. В стиле «字帖» (тушь + бумага + 青).
+   ============================================================ */
+
+/* ── мягкое появление секций ── */
+.reveal { opacity: 0; transform: translateY(14px); }
+.reveal.reveal-in { opacity: 1; transform: none;
+  transition: opacity .5s ease, transform .55s cubic-bezier(.2,.8,.3,1); }
+
+/* ============================================================
+   ПИТОМЕЦ-КОМПАНЬОН 🐼
+   ============================================================ */
+.pet { position: fixed; right: 22px; bottom: 24px; width: 66px; height: 66px;
+  z-index: 60; cursor: pointer; filter: drop-shadow(0 10px 16px rgba(40,30,15,.28));
+  transition: transform .2s ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.pet:hover { transform: translateY(-3px) scale(1.05); }
+.pet:active { transform: scale(.94); }
+.pet .pet-svg { display: block; animation: petFloat 4.5s ease-in-out infinite; }
+@keyframes petFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.pet-face { fill: #fbfaf6; stroke: #e6e0d0; stroke-width: 1.5; }
+.pet-ear, .pet-patch, .pet-eye, .pet-nose { fill: #211f1a; }
+.pet-shine { fill: #fff; }
+.pet-mouth { stroke: #211f1a; stroke-width: 2; fill: none; stroke-linecap: round; }
+.pet-eye, .pet-shine { transform-box: fill-box; transform-origin: center; }
+.pet.blink .pet-eye { transform: scaleY(.12); }
+.pet.blink .pet-shine { opacity: 0; }
+
+.pet.happy .pet-svg { animation: petHappy .7s ease; }
+@keyframes petHappy { 0% { transform: translateY(0); } 30% { transform: translateY(-12px) rotate(-6deg); }
+  55% { transform: translateY(0) rotate(4deg); } 75% { transform: translateY(-5px) rotate(-2deg); } 100% { transform: translateY(0); } }
+.pet.sad .pet-svg { animation: petSad .7s ease; }
+@keyframes petSad { 0%,100% { transform: rotate(0); } 20% { transform: rotate(7deg) translateY(2px); }
+  60% { transform: rotate(-7deg) translateY(2px); } }
+.pet.cheer .pet-svg { animation: petCheer .9s ease; }
+@keyframes petCheer { 0% { transform: scale(1); } 25% { transform: translateY(-16px) scale(1.12); }
+  50% { transform: translateY(0) scale(1); } 70% { transform: translateY(-9px) scale(1.06); } 100% { transform: translateY(0) scale(1); } }
+
+.pet-bubble { position: absolute; right: 4px; bottom: 74px; max-width: 200px; width: max-content;
+  background: var(--ink); color: var(--paper); font-weight: 700; font-size: 13.5px; line-height: 1.35;
+  padding: 9px 13px; border-radius: 14px 14px 4px 14px; box-shadow: var(--shadow-sm);
+  opacity: 0; transform: translateY(6px) scale(.9); transform-origin: bottom right; pointer-events: none; }
+.pet-bubble.show { opacity: 1; transform: translateY(0) scale(1);
+  transition: opacity .26s ease, transform .26s cubic-bezier(.2,1.3,.4,1); }
+.pet-bubble::after { content: ''; position: absolute; right: 14px; bottom: -6px;
+  border: 6px solid transparent; border-top-color: var(--ink); border-bottom: 0; }
+
+@media (max-width: 640px) {
+  .pet { right: 14px; bottom: 80px; width: 56px; height: 56px; }  /* над нижней навигацией */
+  .pet .pet-svg { width: 56px; height: 56px; }
+}
+
+/* ============================================================
+   ЛИЧНОЕ: имя + печенье
+   ============================================================ */
+.personal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+@media (max-width: 600px) { .personal-row { grid-template-columns: 1fr; } }
+
+.name-card, .fortune-card {
+  background: linear-gradient(165deg, var(--surface), var(--vermilion-soft));
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.name-card { cursor: pointer; transition: transform .18s, box-shadow .2s; }
+.name-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.nc-label, .fc-label, .gc-label { display: inline-flex; align-items: center; gap: 6px;
+  color: var(--vermilion); background: var(--vermilion-soft); padding: 5px 11px;
+  border-radius: 999px; font-weight: 800; font-size: 12px; letter-spacing: .3px; }
+.nc-zi { font-family: var(--serif); font-weight: 900; font-size: 56px; line-height: 1.1; margin-top: 10px; color: var(--vermilion); }
+.nc-pin { font-weight: 800; color: var(--ink-soft); font-size: 18px; margin-top: 2px; }
+.nc-parts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 0 8px; font-size: 14px; color: var(--ink-soft); }
+.nc-part b { font-family: var(--serif); color: var(--ink); font-size: 18px; margin-right: 3px; }
+.nc-meaning { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+
+.fortune-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.fc-cookie { font-size: 56px; background: none; border: none; cursor: pointer; line-height: 1;
+  margin: 6px 0 2px; animation: cookieWobble 3.4s ease-in-out infinite; transition: transform .15s; }
+.fc-cookie:hover { transform: scale(1.08) rotate(-4deg); }
+@keyframes cookieWobble { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+.fc-hint { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+.fortune-card.open { background: linear-gradient(165deg, var(--surface), var(--celadon-soft)); }
+.fortune-card.pop { animation: fcPop .5s cubic-bezier(.2,1.2,.3,1); }
+@keyframes fcPop { 0% { transform: scale(.96); } 60% { transform: scale(1.02); } 100% { transform: scale(1); } }
+.fc-zh { font-family: var(--serif); font-weight: 700; font-size: 26px; color: var(--celadon-dk);
+  background: none; border: none; cursor: pointer; line-height: 1.25; }
+.fc-py { color: var(--ink-soft); font-weight: 700; font-size: 13.5px; }
+.fc-ru { font-size: 14.5px; line-height: 1.55; margin: 4px 0 0; color: var(--ink); }
+
+/* ============================================================
+   САД ЗНАНИЙ 🌳
+   ============================================================ */
+.garden-card { display: grid; grid-template-columns: 1fr 160px; gap: 10px; align-items: center;
+  margin-top: 18px; padding: 16px 20px; cursor: pointer;
+  background: linear-gradient(160deg, var(--surface), var(--celadon-soft));
+  border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  transition: transform .18s, box-shadow .2s; }
+.garden-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.gc-text { font-weight: 700; color: var(--ink); margin: 10px 0 8px; }
+.gc-link { color: var(--celadon-dk); font-weight: 800; }
+.garden-mini, .garden-stage { background:
+  linear-gradient(180deg, #cfe7f2 0%, #e3f0e6 55%, #dceccf 100%); border-radius: var(--radius-sm); overflow: hidden; }
+.garden-mini { height: 120px; }
+.garden-mini .garden-svg { width: 100%; height: 100%; display: block; }
+
+.garden-stage { max-width: 520px; margin: 16px auto 0; padding: 4px; }
+.garden-svg { width: 100%; height: auto; display: block; }
+
+.garden-stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+.gstat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm); padding: 12px 18px; display: flex; flex-direction: column; align-items: center; min-width: 96px; }
+.gstat-ic { color: var(--celadon-dk); }
+.gstat b { font-family: var(--serif); font-size: 26px; margin-top: 4px; }
+.gstat span { font-size: 12.5px; color: var(--ink-soft); }
+.garden-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+
+/* краски сада (иллюстрация — фиксированные цвета, читаются в обеих темах) */
+.g-soil { fill: #b78a5c; }
+.g-grass { fill: #8fc06a; opacity: .8; }
+.g-sun { fill: #f7d569; }
+[data-theme="dark"] .g-sun { fill: #f4e7a6; }
+.g-seed { fill: #7a5a3a; }
+.g-sprout { fill: none; stroke: #5fa84a; stroke-width: 3; stroke-linecap: round; }
+.g-trunk { fill: #9c6b3f; }
+.g-branch { fill: none; stroke: #9c6b3f; stroke-width: 5; stroke-linecap: round; }
+.g-leaf { fill: #6fb35a; opacity: .92; }
+.g-leaf:nth-of-type(odd) { fill: #5fa84a; }
+.g-bud { fill: #f3c6cf; }
+.g-petal { fill: #ef9ab0; } .g-petal.alt { fill: #f4b8c4; } .g-petal.alt2 { fill: #efd06a; }
+.g-core { fill: #f7d569; }
+.g-flower { animation: bloom .6s cubic-bezier(.2,1.3,.4,1) both; transform-box: fill-box; transform-origin: center; }
+@keyframes bloom { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+.g-butterfly { animation: flit 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes flit { 0%,100% { transform: translate(0,0); } 50% { transform: translate(8px,-10px); } }
+.g-wing { fill: #e7a3b0; opacity: .9; }
+.g-body { stroke: #4a3b2a; stroke-width: 2; }
+
+/* ============================================================
+   ПРОИСХОЖДЕНИЕ ИЕРОГЛИФОВ 🀄
+   ============================================================ */
+.etym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 18px; }
+.etym-card { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px; box-shadow: var(--shadow-sm); }
+.etym-box { position: relative; width: 100px; height: 100px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1.5px dashed var(--line-strong); cursor: pointer;
+  display: grid; place-items: center; overflow: hidden; }
+.etym-pic { position: absolute; inset: 0; display: grid; place-items: center; font-size: 52px; }
+.etym-zi { position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 900; font-size: 60px; color: var(--vermilion); }
+.etym-head { display: flex; align-items: center; gap: 8px; }
+.etym-pin { font-size: 18px; }
+.etym-ru { color: var(--ink-soft); font-weight: 700; }
+.etym-head .icon-btn { margin-left: auto; }
+.etym-story { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 8px 0 10px; }
+.btn-sm { padding: 7px 13px; font-size: 13px; }

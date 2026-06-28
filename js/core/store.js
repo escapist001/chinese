@@ -34,6 +34,8 @@ CN.store = (function () {
   s.settings = Object.assign({}, fresh().settings, s.settings || {});
 
   const save = () => localStorage.setItem(KEY, JSON.stringify(s));
+  // лёгкая шина событий: маскот/анимации слушают, ядро не зависит от DOM
+  const emit = (name, detail) => { try { document.dispatchEvent(new CustomEvent(name, { detail: detail || {} })); } catch (e) {} };
 
   // интервалы повторения (Лейтнер): box → через сколько дней
   const BOX_DAYS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 16 };
@@ -50,7 +52,12 @@ CN.store = (function () {
       const cur = 50 * (lvl - 1) ** 2, next = 50 * lvl ** 2;
       return { lvl, cur: s.xp - cur, need: next - cur, pct: Math.round((s.xp - cur) / (next - cur) * 100) };
     },
-    addXp(n) { s.xp += n; api.touchStreak(); save(); },
+    addXp(n) {
+      const before = api.level();
+      s.xp += n; api.touchStreak(); save();
+      const after = api.level();
+      if (after > before) emit('cn:levelup', { level: after });
+    },
 
     /* ── серия дней ── */
     touchStreak() {
@@ -71,6 +78,7 @@ CN.store = (function () {
         if (!s.activity) s.activity = {};
         s.activity[t] = (s.activity[t] || 0) + 1;
         api.addXp(2);
+        emit('cn:seen', { hanzi });
       }
       if (!s.srs[hanzi]) s.srs[hanzi] = { box: 1, due: todayStr() };
       save();
@@ -90,6 +98,7 @@ CN.store = (function () {
       if (ok) { delete s.mistakes[hanzi]; api.addXp(3); }
       else { s.mistakes[hanzi] = (s.mistakes[hanzi] || 0) + 1; }
       save();
+      emit('cn:answer', { ok: !!ok, hanzi });
     },
     mistakeWords: () => Object.keys(s.mistakes || {}),
     dueCards() {
@@ -147,6 +156,12 @@ CN.store = (function () {
     /* ── сюрпризы ── */
     surpriseSeen: (id) => !!(s.flags && s.flags['s_' + id]),
     markSurprise(id) { if (!s.flags) s.flags = {}; s.flags['s_' + id] = true; save(); },
+
+    /* ── «раз в день»: печенье с предсказанием и т.п. ── */
+    todayStr,
+    flagDate: (k) => (s.flags && s.flags['d_' + k]) || null,
+    setFlagDate(k) { if (!s.flags) s.flags = {}; s.flags['d_' + k] = todayStr(); save(); },
+    isDoneToday: (k) => !!(s.flags && s.flags['d_' + k] === todayStr()),
 
     setSetting(k, v) { s.settings[k] = v; save(); },
     reset() { s = fresh(); save(); },

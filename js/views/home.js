@@ -71,6 +71,23 @@ CN.views.home = function () {
     c.speak(wod.hanzi),
   ]));
 
+  // ── личное: китайское имя Жени + печенье с предсказанием ──
+  wrap.append(el('section', { class: 'personal-row' }, [ nameCard(), fortuneCard() ]));
+
+  // ── сад знаний (предпросмотр) ──
+  if (CN.garden) {
+    const preview = el('div', { class: 'garden-mini' });
+    preview.innerHTML = CN.garden.svg({ mini: true });
+    wrap.append(el('section', { class: 'garden-card', onclick: () => CN.router.go('#/garden') }, [
+      el('div', { class: 'garden-card-side' }, [
+        el('div', { class: 'gc-label' }, [ icon('sparkle', 15), 'Твой сад знаний' ]),
+        el('div', { class: 'gc-text' }, `${st.masteredCount()} цветов · растёт с каждым словом`),
+        el('span', { class: 'gc-link' }, 'Открыть сад →'),
+      ]),
+      preview,
+    ]));
+  }
+
   // ── хаб тренировок ──
   const mc = st.mistakeWords().length;
   const drills = [
@@ -106,6 +123,8 @@ CN.views.home = function () {
     ['seal', 'Радикалы 部首', '#/radicals'],
     ['chart', 'Таблица пиньиня', '#/pinyintable'],
     ['book', 'Счётные слова', '#/measure'],
+    ['sparkle', 'Иероглифы 字源', '#/etymology'],
+    ['star', 'Сад знаний', '#/garden'],
   ];
   const matSec = el('section', { class: 'drill-hub' }, [ el('h2', { class: 'section-h' }, 'Материалы и тесты') ]);
   matSec.append(el('div', { class: 'drill-grid' }, mats.map(([ic, label, href]) =>
@@ -144,6 +163,60 @@ CN.views.home = function () {
     ]));
   });
   wrap.append(map);
+
+  // ── личное: карточка китайского имени Жени ──
+  function nameCard() {
+    const n = CN.zheName;
+    if (!n) return null;
+    return el('div', { class: 'name-card', onclick: () => CN.audio.speak(n.hanzi), title: 'Послушать' }, [
+      el('div', { class: 'nc-label' }, [ icon('sparkle', 14), 'Твоё китайское имя' ]),
+      el('div', { class: 'nc-zi' }, n.hanzi),
+      el('div', { class: 'nc-pin' }, n.pinyin),
+      el('div', { class: 'nc-parts' }, n.parts.map(p =>
+        el('span', { class: 'nc-part' }, [ el('b', {}, p.zi), ` — ${p.ru}` ]))),
+      el('p', { class: 'nc-meaning' }, n.meaning),
+    ]);
+  }
+
+  // ── печенье с предсказанием (одно на день) ──
+  function fortuneCard() {
+    const f = (function () {
+      const d = CN.u.todayStr(); let h = 0;
+      for (const ch of d) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+      return (CN.fortunes || [{ zh: '加油', py: 'jiāyóu', ru: 'Вперёд!' }])[h % (CN.fortunes || [1]).length];
+    })();
+    const card = el('div', { class: 'fortune-card' });
+    const opened = st.isDoneToday('fortune');
+    if (opened) reveal(); else closed();
+    return card;
+
+    function closed() {
+      card.className = 'fortune-card';
+      card.innerHTML = '';
+      card.append(
+        el('div', { class: 'fc-label' }, [ icon('sparkle', 14), 'Печенье дня' ]),
+        el('button', { class: 'fc-cookie', 'aria-label': 'Открыть печенье с предсказанием' }, '🥠'),
+        el('div', { class: 'fc-hint' }, 'Нажми — узнай предсказание'),
+      );
+      CN.u.$('.fc-cookie', card).addEventListener('click', () => {
+        st.setFlagDate('fortune');
+        const r = card.getBoundingClientRect();
+        CN.fx.inkBurst({ count: 16, x: r.left + r.width / 2, y: r.top + r.height / 2, colors: ['#d23c2c', '#e8b04b', '#e87a6b'] });
+        CN.fx.petals({ count: 14, dur: 2400 });
+        reveal(true);
+      });
+    }
+    function reveal(anim) {
+      card.className = 'fortune-card open' + (anim ? ' pop' : '');
+      card.innerHTML = '';
+      card.append(
+        el('div', { class: 'fc-label' }, [ icon('sparkle', 14), 'Предсказание дня' ]),
+        el('button', { class: 'fc-zh', onclick: () => CN.audio.speak(f.zh), title: 'Послушать' }, f.zh),
+        el('div', { class: 'fc-py' }, f.py),
+        el('p', { class: 'fc-ru' }, f.ru),
+      );
+    }
+  }
 
   // ── анимации после монтирования ──
   function miniStat(ic, val, label, suffix) {

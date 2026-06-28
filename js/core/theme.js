@@ -16,7 +16,26 @@ CN.theme = (function () {
   }
 
   function set(t) { CN.store.setSetting('theme', t); apply(t); }
-  function toggle() { set(current() === 'dark' ? 'light' : 'dark'); }
+
+  // чернильная волна: круг расходится из кнопки, на пике переключаем тему
+  function toggle() {
+    const nextT = current() === 'dark' ? 'light' : 'dark';
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const btn = document.getElementById('themeToggle');
+    if (reduced || !btn || typeof document.body.animate !== 'function') { set(nextT); return; }
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const far = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+    const wave = document.createElement('div');
+    const bg = nextT === 'dark' ? '#14161a' : '#f1ede2';
+    wave.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:${far*2}px;height:${far*2}px;`
+      + `margin:${-far}px 0 0 ${-far}px;border-radius:50%;background:${bg};z-index:300;pointer-events:none;`
+      + `transform:scale(0);will-change:transform`;
+    document.body.append(wave);
+    const an = wave.animate([{ transform: 'scale(0)' }, { transform: 'scale(1)' }], { duration: 620, easing: 'cubic-bezier(.4,0,.2,1)' });
+    setTimeout(() => set(nextT), 300);
+    an.onfinish = () => { wave.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).onfinish = () => wave.remove(); };
+  }
 
   // кнопка показывает иконку ТОЙ темы, на которую переключит
   function refreshButton() {

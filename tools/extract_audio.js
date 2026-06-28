@@ -45,6 +45,10 @@ CNX.tones.forEach(t => add(t.hanzi));
 // радикалы (ключ + примеры) и счётные слова (ключ + пример)
 (CNX.radicals || []).forEach(r => { add(r.char); (r.examples || []).forEach(add); });
 (CNX.measureWords || []).forEach(m => { add(m.char); if (m.example) add(m.example.hanzi); });
+// китайское имя Жени, этимология иероглифов, фразы из «печенья»
+if (CNX.zheName) { add(CNX.zheName.hanzi); (CNX.zheName.parts || []).forEach(p => add(p.zi)); }
+(CNX.etymology || []).forEach(e => add(e.hanzi));
+(CNX.fortunes || []).forEach(f => add(f.zh));
 // проверочная фраза из настроек
 add('你好世界');
 
