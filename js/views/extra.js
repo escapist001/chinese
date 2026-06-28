@@ -68,11 +68,18 @@ CN.views.settings = function () {
     e.currentTarget.textContent = ''; e.currentTarget.append(icon('book'), v === 'l' ? 'Крупные' : 'Обычные'); } },
     [ icon('book'), s.hanziSize === 'l' ? 'Крупные' : 'Обычные' ]);
 
-  // питомец-компаньон 🐼
-  const petBtn = el('button', { class: 'btn btn-ghost', onclick: (e) => {
-    const v = !(s.pet !== false); st.setSetting('pet', v); if (CN.mascot) CN.mascot.refresh();
-    e.currentTarget.textContent = ''; e.currentTarget.append(icon(v ? 'check' : 'close'), v ? 'Показан 🐼' : 'Скрыт'); } },
-    [ icon(s.pet === false ? 'close' : 'check'), s.pet === false ? 'Скрыт' : 'Показан 🐼' ]);
+  // питомцы-компаньоны 🐱🐶
+  const PET_ORDER = ['both', 'lusya', 'rada', 'panda', 'off'];
+  const PET_LABEL = { both: 'Люся и Рада 🐱🐶', lusya: 'Люся 🐱', rada: 'Рада 🐶', panda: 'Панда 🐼', off: 'Выключены' };
+  const petCur = () => s.pet === false ? 'off' : (s.petChar || 'both');
+  const petBtn = el('button', { class: 'btn btn-ghost' }, PET_LABEL[petCur()]);
+  petBtn.addEventListener('click', () => {
+    const next = PET_ORDER[(PET_ORDER.indexOf(petCur()) + 1) % PET_ORDER.length];
+    if (next === 'off') st.setSetting('pet', false);
+    else { st.setSetting('pet', true); st.setSetting('petChar', next); }
+    petBtn.textContent = PET_LABEL[next];
+    if (CN.mascot) CN.mascot.refresh();
+  });
 
   wrap.append(el('div', { class: 'settings-list' }, [
     row('speaker', 'Скорость озвучки', el('div', { class: 'set-speed' }, [ presets,
@@ -81,7 +88,7 @@ CN.views.settings = function () {
     row('moon', 'Оформление', themeBtn),
     row('book', 'Пиньинь под словами', pinBtn),
     row('book', 'Размер иероглифов', sizeBtn),
-    row('star', 'Питомец-компаньон', petBtn),
+    row('star', 'Кто рядом с тобой', petBtn),
     row('speaker', 'Живой голос', el('span', {}, CN.audio.voiceCount
       ? `${CN.audio.voiceCount} фраз озвучены носителем` + (CN.audio.available() ? '' : '')
       : (CN.audio.available() ? 'системный голос' : 'недоступна'))),

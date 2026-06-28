@@ -12,12 +12,17 @@
 /* ============================================================
    ПИТОМЕЦ-КОМПАНЬОН 🐼
    ============================================================ */
-.pet { position: fixed; right: 22px; bottom: 24px; width: 66px; height: 66px;
-  z-index: 60; cursor: pointer; filter: drop-shadow(0 10px 16px rgba(40,30,15,.28));
+.pet-zone { position: fixed; right: 20px; bottom: 24px; z-index: 60;
+  display: flex; align-items: flex-end; gap: 8px; }
+.pet { position: relative; width: 66px; height: 66px; cursor: pointer;
+  filter: drop-shadow(0 10px 16px rgba(40,30,15,.28));
   transition: transform .2s ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .pet:hover { transform: translateY(-3px) scale(1.05); }
 .pet:active { transform: scale(.94); }
-.pet .pet-svg { display: block; animation: petFloat 4.5s ease-in-out infinite; }
+.pet-art { display: block; width: 100%; height: 100%; animation: petFloat 4.5s ease-in-out infinite; }
+.pet:nth-child(2) .pet-art { animation-delay: .6s; }   /* второй питомец парит со сдвигом */
+.pet-art svg { display: block; width: 100%; height: 100%; }
+.pet-img { object-fit: contain; }
 @keyframes petFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
 .pet-face { fill: #fbfaf6; stroke: #e6e0d0; stroke-width: 1.5; }
@@ -28,13 +33,29 @@
 .pet.blink .pet-eye { transform: scaleY(.12); }
 .pet.blink .pet-shine { opacity: 0; }
 
-.pet.happy .pet-svg { animation: petHappy .7s ease; }
+/* Люся 🐱 (цвета можно поменять под реальную Люсю) */
+.cat-fur { fill: #9c958c; }            /* шёрстка */
+.cat-cheek { fill: #cfc8bd; }          /* светлая мордочка */
+.cat-ear { fill: #9c958c; } .cat-ear-in { fill: #e9a8b0; }
+.cat-eye { fill: #3a7d4a; }            /* зелёные глазки */
+.cat-nose { fill: #e58fa0; }
+.cat-mouth { stroke: #5a544c; stroke-width: 2; fill: none; stroke-linecap: round; }
+.cat-whisker line { stroke: #b9b3aa; stroke-width: 1.4; stroke-linecap: round; }
+
+/* Рада 🐶 (цвета можно поменять под реальную Раду) */
+.dog-fur { fill: #d9a45b; } .dog-muzzle { fill: #f0dcc0; } .dog-ear { fill: #c2883f; }
+.dog-eye { fill: #2b2620; }
+.dog-nose { fill: #3a2e26; }
+.dog-mouth { stroke: #5a473a; stroke-width: 2; fill: none; stroke-linecap: round; }
+.dog-tongue { fill: #e98a96; }
+
+.pet.happy .pet-art { animation: petHappy .7s ease; }
 @keyframes petHappy { 0% { transform: translateY(0); } 30% { transform: translateY(-12px) rotate(-6deg); }
   55% { transform: translateY(0) rotate(4deg); } 75% { transform: translateY(-5px) rotate(-2deg); } 100% { transform: translateY(0); } }
-.pet.sad .pet-svg { animation: petSad .7s ease; }
+.pet.sad .pet-art { animation: petSad .7s ease; }
 @keyframes petSad { 0%,100% { transform: rotate(0); } 20% { transform: rotate(7deg) translateY(2px); }
   60% { transform: rotate(-7deg) translateY(2px); } }
-.pet.cheer .pet-svg { animation: petCheer .9s ease; }
+.pet.cheer .pet-art { animation: petCheer .9s ease; }
 @keyframes petCheer { 0% { transform: scale(1); } 25% { transform: translateY(-16px) scale(1.12); }
   50% { transform: translateY(0) scale(1); } 70% { transform: translateY(-9px) scale(1.06); } 100% { transform: translateY(0) scale(1); } }
 
@@ -48,8 +69,8 @@
   border: 6px solid transparent; border-top-color: var(--ink); border-bottom: 0; }
 
 @media (max-width: 640px) {
-  .pet { right: 14px; bottom: 80px; width: 56px; height: 56px; }  /* над нижней навигацией */
-  .pet .pet-svg { width: 56px; height: 56px; }
+  .pet-zone { right: 12px; bottom: 82px; gap: 4px; }  /* над нижней навигацией */
+  .pet { width: 52px; height: 52px; }
 }
 
 /* ============================================================
