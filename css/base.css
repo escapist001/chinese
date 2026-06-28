@@ -1,0 +1,218 @@
+/* ============================================================
+   base.css — дизайн-система «字帖» (тетрадь для каллиграфии).
+   Тушь + прохладная рисовая бумага + 青 селадон, красный (朱砂) —
+   как акцент-печать. Две темы: 昼 (день) и 夜 (ночь, чернила).
+   Сигнатурный мотив — клетка 田字格 за иероглифами.
+   ============================================================ */
+
+/* ── ТОКЕНЫ: дневная тема (по умолчанию) ── */
+:root {
+  --paper:#f1ede2; --paper-2:#e6e0d0; --surface:#fcfaf4; --surface-2:#f6f1e6;
+  --ink:#211f1a; --ink-soft:#6c655a;
+  --line:rgba(33,31,26,.12); --line-strong:rgba(33,31,26,.2);
+  --vermilion:#d23c2c; --vermilion-dk:#b22d1f; --vermilion-soft:rgba(210,60,44,.10);
+  --celadon:#2c7d6b; --celadon-dk:#1f6354; --celadon-soft:rgba(44,125,107,.12);
+  --seal:#c0291a;
+  --grid-line:rgba(210,60,44,.30); --grid-border:rgba(210,60,44,.22);
+  --shadow:0 22px 50px -30px rgba(45,35,20,.45);
+  --shadow-sm:0 10px 26px -18px rgba(45,35,20,.5);
+  --radius:22px; --radius-sm:14px;
+  --display:'Spectral', Georgia, serif;
+  --serif:'Noto Serif SC', serif;
+  --sans:'Manrope', system-ui, sans-serif;
+}
+
+/* ── ТОКЕНЫ: ночная «чернильная» тема ── */
+[data-theme="dark"] {
+  --paper:#14161a; --paper-2:#1d2127; --surface:#1b1f25; --surface-2:#222730;
+  --ink:#ece6d9; --ink-soft:#9b9488;
+  --line:rgba(236,230,217,.12); --line-strong:rgba(236,230,217,.22);
+  --vermilion:#ff5b47; --vermilion-dk:#ff7c6c; --vermilion-soft:rgba(255,91,71,.15);
+  --celadon:#56b89e; --celadon-dk:#74c8b2; --celadon-soft:rgba(86,184,158,.16);
+  --seal:#ff5b47;
+  --grid-line:rgba(255,91,71,.32); --grid-border:rgba(255,91,71,.24);
+  --shadow:0 26px 60px -32px rgba(0,0,0,.75);
+  --shadow-sm:0 12px 30px -20px rgba(0,0,0,.8);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; overflow-x:hidden; max-width:100%; }
+body {
+  font-family:var(--sans); color:var(--ink); min-height:100vh; overflow-x:hidden;
+  background:
+    radial-gradient(1100px 560px at 84% -12%, var(--vermilion-soft) 0%, transparent 60%),
+    radial-gradient(880px 480px at -12% 112%, var(--celadon-soft) 0%, transparent 55%),
+    var(--paper);
+  transition:background-color .4s, color .4s;
+}
+
+/* фоновые иероглифы-«водяные знаки» */
+.bg-decor { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.bg-decor span {
+  position:absolute; font-family:var(--serif); font-weight:900;
+  color:var(--ink); opacity:.035; font-size:clamp(180px,30vw,460px); user-select:none;
+}
+.bg-decor span:nth-child(1){ top:-7%; left:-3%; }
+.bg-decor span:nth-child(2){ top:33%; right:-5%; }
+.bg-decor span:nth-child(3){ bottom:-11%; left:24%; }
+
+/* ============================================================
+   СИГНАТУРА: клетка 田字格 — рамка + пунктирный крест.
+   Любой крупный иероглиф можно посадить в .zi-grid.
+   ============================================================ */
+.zi-grid {
+  position:relative; display:grid; place-items:center; aspect-ratio:1;
+  border:1.5px solid var(--grid-border); border-radius:10px;
+  background:var(--surface);
+}
+.zi-grid::before, .zi-grid::after { content:''; position:absolute; }
+.zi-grid::before { left:50%; top:7%; bottom:7%; border-left:1.5px dashed var(--grid-line); }
+.zi-grid::after  { top:50%; left:7%; right:7%; border-top:1.5px dashed var(--grid-line); }
+.zi-grid > * { position:relative; z-index:1; }
+
+/* ── ШАПКА ── */
+.topbar {
+  position:sticky; top:0; z-index:50; display:flex; align-items:center;
+  justify-content:space-between; gap:16px; flex-wrap:wrap;
+  padding:11px clamp(16px,5vw,48px);
+  background:color-mix(in srgb, var(--paper) 82%, transparent);
+  backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--line);
+}
+.brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--ink); }
+.brand-zi {
+  font-family:var(--serif); font-weight:900; font-size:22px; color:#fff;
+  background:var(--vermilion); padding:6px 12px; border-radius:11px; letter-spacing:1px;
+  box-shadow:0 8px 18px -8px var(--vermilion); position:relative;
+}
+.brand-zi::after { /* «дырочка» печати в углу */
+  content:''; position:absolute; top:5px; right:5px; width:4px; height:4px;
+  border-radius:50%; background:rgba(255,255,255,.55);
+}
+.brand-text { font-weight:800; line-height:1.05; font-size:15px; }
+.brand-text i { color:var(--ink-soft); font-weight:600; font-style:normal; font-size:12.5px; }
+
+.nav { display:flex; align-items:center; gap:2px; flex-wrap:wrap; }
+.nav-link {
+  position:relative; text-decoration:none; color:var(--ink-soft); font-weight:700;
+  font-size:15px; padding:8px 13px; border-radius:10px; transition:color .2s, background .2s;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.nav-link:hover { color:var(--ink); background:var(--celadon-soft); }
+.nav-link.active { color:var(--vermilion); }
+.nav-link.active::after {
+  content:''; position:absolute; left:13px; right:13px; bottom:2px; height:2px;
+  background:var(--vermilion); border-radius:2px;
+}
+.nav-link .ic { width:18px; height:18px; }
+
+.header-tools { display:flex; align-items:center; gap:8px; }
+.streak-badge {
+  display:inline-flex; align-items:center; gap:5px; font-weight:800; font-size:14px;
+  color:var(--vermilion); background:var(--vermilion-soft); padding:6px 11px; border-radius:999px;
+}
+.streak-badge .ic { width:16px; height:16px; }
+.theme-toggle {
+  display:grid; place-items:center; width:38px; height:38px; border-radius:11px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer;
+  transition:transform .15s, border-color .2s, color .2s;
+}
+.theme-toggle:hover { color:var(--vermilion); border-color:var(--vermilion); transform:translateY(-1px); }
+
+main { position:relative; z-index:1; }
+.view { max-width:1080px; margin:0 auto; padding:clamp(24px,5vw,54px) clamp(16px,5vw,40px) 96px; }
+.view { animation:fadeUp .5s cubic-bezier(.2,.7,.3,1) both; }
+@keyframes fadeUp { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;} }
+
+.view-h { font-family:var(--display); font-weight:800; font-size:clamp(30px,5vw,46px); letter-spacing:-.01em; line-height:1.05; }
+.view-lead { color:var(--ink-soft); font-size:18px; max-width:640px; margin-top:12px; line-height:1.6; }
+.section-h { font-family:var(--display); font-weight:700; font-size:clamp(22px,3.5vw,30px); margin:42px 0 18px;
+  display:flex; align-items:center; gap:12px; letter-spacing:-.01em; }
+.section-h::before { content:''; width:18px; height:3px; border-radius:3px; background:var(--vermilion); }
+
+/* ── КНОПКИ ── */
+.btn { font-family:inherit; font-weight:800; font-size:16px; border:none; cursor:pointer;
+  padding:13px 24px; border-radius:999px; display:inline-flex; align-items:center; gap:9px;
+  transition:transform .15s, box-shadow .25s, background .2s, color .2s; }
+.btn .ic { width:19px; height:19px; }
+.btn:active { transform:translateY(1px) scale(.985); }
+.btn-primary { background:var(--vermilion); color:#fff; box-shadow:0 14px 28px -12px var(--vermilion); }
+.btn-primary:hover { background:var(--vermilion-dk); transform:translateY(-2px); }
+.btn-ghost { background:transparent; color:var(--ink); border:1.5px solid var(--line-strong); }
+.btn-ghost:hover { background:var(--celadon-soft); border-color:var(--celadon); color:var(--celadon-dk); transform:translateY(-2px); }
+.btn-gold { background:var(--celadon); color:#fff; box-shadow:0 14px 28px -14px var(--celadon); }
+.btn-gold:hover { background:var(--celadon-dk); transform:translateY(-2px); }
+.btn-danger { background:transparent; color:var(--vermilion-dk); border:1.5px solid var(--vermilion-soft); font-weight:800; }
+.btn-danger:hover { background:var(--vermilion); color:#fff; border-color:var(--vermilion); }
+
+.icon-btn { border:none; cursor:pointer; background:var(--celadon-soft); color:var(--celadon-dk);
+  width:38px; height:38px; border-radius:11px; display:grid; place-items:center; transition:.2s; flex:0 0 auto; }
+.icon-btn .ic { width:19px; height:19px; }
+.icon-btn:hover { background:var(--celadon); color:#fff; transform:translateY(-1px); }
+
+.back-link { background:none; border:none; cursor:pointer; color:var(--ink-soft); font-weight:800;
+  font-size:15px; font-family:inherit; padding:6px 0; margin-bottom:12px; display:inline-flex; align-items:center; gap:7px;
+  transition:color .2s, gap .2s; }
+.back-link .ic { width:18px; height:18px; }
+.back-link:hover { color:var(--vermilion); gap:10px; }
+
+.tip { color:var(--ink-soft); font-size:15px; margin:6px 0 18px; line-height:1.5; }
+.pill { display:inline-block; padding:3px 11px; border-radius:999px; font-size:12px; font-weight:800;
+  background:var(--celadon-soft); color:var(--celadon-dk); }
+
+.footer { text-align:center; color:var(--ink-soft); padding:36px 20px; font-weight:500; position:relative; z-index:1;
+  font-family:var(--display); font-style:italic; font-size:15px; }
+.bar { height:8px; background:var(--paper-2); border-radius:999px; overflow:hidden; }
+.bar > i { display:block; height:100%; background:linear-gradient(90deg,var(--vermilion),var(--celadon)); transition:width .7s cubic-bezier(.2,.7,.3,1); }
+
+/* ── ТОСТ (XP / награды) ── */
+.toast-wrap { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:200;
+  display:flex; flex-direction:column; gap:10px; align-items:center; pointer-events:none; }
+.toast { display:inline-flex; align-items:center; gap:9px; font-weight:800; font-size:15px;
+  color:#fff; background:var(--ink); padding:11px 18px; border-radius:999px; box-shadow:var(--shadow);
+  animation:toastIn .3s cubic-bezier(.2,.8,.3,1.2) both; }
+.toast .ic { width:18px; height:18px; color:var(--vermilion); }
+.toast.gold .ic { color:var(--celadon-dk); }
+@keyframes toastIn { from{opacity:0; transform:translateY(14px) scale(.9);} to{opacity:1; transform:none;} }
+
+/* ── НИЖНЯЯ НАВИГАЦИЯ (ТЕЛЕФОН) ── */
+.bottom-nav { display:none; }
+
+@media (max-width:640px) {
+  .topbar .nav { display:none; }                 /* верхние ссылки прячем — есть нижнее меню */
+  .topbar { padding:10px 16px; }
+  .brand-text { font-size:14px; }
+
+  .bottom-nav {
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
+    background:color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter:blur(14px) saturate(1.2);
+    border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    justify-content:space-around;
+  }
+  .bnav-link { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    color:var(--ink-soft); text-decoration:none; font-weight:700; font-size:11px;
+    padding:6px 2px; border-radius:12px; min-height:48px; justify-content:center; }
+  .bnav-link .ic { width:22px; height:22px; }
+  .bnav-link.active { color:var(--vermilion); background:none; }
+  .bnav-link.active::after { display:none; }
+
+  .wr-mid, .wod-mid, .rank-info, .meas-mid, .deck-open { min-width:0; }
+  main { padding-bottom:74px; }
+  .view { padding-bottom:96px; }
+  .footer { padding-bottom:92px; }
+  .toast-wrap { bottom:calc(82px + env(safe-area-inset-bottom)); }
+
+  /* читаемость и тап-цели на узких экранах */
+  .view-h { font-size:clamp(26px,7vw,34px); }
+  .match-board { grid-template-columns:1fr 1fr; gap:10px; }
+  .icon-btn { width:40px; height:40px; }
+}
+
+/* ── ДОСТУПНОСТЬ ── */
+:focus-visible { outline:3px solid var(--vermilion); outline-offset:2px; border-radius:6px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}

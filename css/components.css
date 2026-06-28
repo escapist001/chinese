@@ -1,0 +1,95 @@
+/* ============================================================
+   components.css — переиспользуемые элементы: слова, карточки,
+   кольцо прогресса, модалка, вкладки, статы, печать-штамп.
+   ============================================================ */
+
+/* ── кольцо прогресса ── */
+.ring { display:block; }
+.ring-bg { fill:none; stroke:var(--paper-2); stroke-width:7; }
+.ring-fg { fill:none; stroke:var(--celadon); stroke-width:7; stroke-linecap:round; transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.3,1); }
+.ring-txt { font:800 15px var(--sans); fill:var(--ink); text-anchor:middle; }
+
+/* ── строка слова ── */
+.words-list { display:flex; flex-direction:column; gap:10px; }
+.word-row {
+  display:flex; align-items:center; gap:16px; background:var(--surface);
+  border-radius:var(--radius-sm); padding:12px 16px; box-shadow:var(--shadow-sm);
+  border:1px solid var(--line); cursor:pointer; transition:transform .15s, box-shadow .2s, border-color .2s;
+}
+.word-row:hover { transform:translateX(5px); box-shadow:var(--shadow); border-color:var(--celadon-soft); }
+.wr-hanzi { font-family:var(--serif); font-weight:900; font-size:34px; min-width:84px; }
+.wr-mid { flex:1; min-width:0; }
+.wr-pin { color:var(--vermilion); font-weight:800; font-size:18px; }
+.wr-ru { color:var(--ink-soft); font-weight:600; }
+.wr-actions { display:flex; gap:8px; }
+
+/* ── карточка-перевёртыш (с клеткой 田字格 на лице) ── */
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:16px; }
+.flip { perspective:1200px; height:196px; position:relative; }
+.flip-inner { position:relative; width:100%; height:100%; cursor:pointer;
+  transition:transform .6s cubic-bezier(.2,.8,.3,1); transform-style:preserve-3d; }
+.flip.flipped .flip-inner { transform:rotateY(180deg); }
+.flip-face { position:absolute; inset:0; backface-visibility:hidden; background:var(--surface);
+  border-radius:var(--radius); box-shadow:var(--shadow); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:14px; text-align:center; border:1px solid var(--line); }
+/* пунктирный крест 田字格 на лицевой стороне */
+.flip-front::before, .flip-front::after { content:''; position:absolute; }
+.flip-front::before { left:50%; top:18%; bottom:18%; border-left:1.5px dashed var(--grid-line); }
+.flip-front::after  { top:50%; left:14%; right:14%; border-top:1.5px dashed var(--grid-line); }
+.flip-face .zi { font-family:var(--serif); font-weight:900; font-size:56px; position:relative; z-index:1; }
+.flip-face .pin { font-size:19px; font-weight:800; color:var(--vermilion); margin-top:6px; position:relative; z-index:1; }
+.flip-hint { position:absolute; bottom:10px; font-size:12px; color:var(--ink-soft); }
+.flip-back { transform:rotateY(180deg); background:linear-gradient(160deg,var(--surface),var(--celadon-soft)); }
+.flip-back .ru { font-size:21px; font-weight:800; }
+.flip-back .pin2 { color:var(--celadon-dk); font-weight:700; margin-top:6px; }
+.speak-abs { position:absolute; top:10px; right:10px; z-index:3; }
+
+/* ── вкладки урока ── */
+.tabbar { display:flex; gap:4px; flex-wrap:wrap; margin:24px 0 20px;
+  background:var(--paper-2); padding:5px; border-radius:14px; width:fit-content; }
+.tab { border:none; background:transparent; cursor:pointer; font-family:inherit; font-weight:800;
+  font-size:15px; color:var(--ink-soft); padding:9px 18px; border-radius:10px; transition:.2s; }
+.tab:hover { color:var(--ink); }
+.tab.on { background:var(--surface); color:var(--vermilion); box-shadow:var(--shadow-sm); }
+
+/* ── статкарточки ── */
+.stat-card { background:var(--surface); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow-sm);
+  border:1px solid var(--line); }
+.stat-card.center { display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
+.stat-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+.stat-top b { font-size:21px; font-family:var(--display); font-weight:700; }
+.stat-top span { color:var(--ink-soft); font-weight:700; font-size:13px; font-variant-numeric:tabular-nums; }
+.stat-label { color:var(--ink-soft); font-weight:700; font-size:13px; }
+.stat-numbers { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.mini-stat { background:var(--surface); border-radius:var(--radius-sm); padding:15px 14px; box-shadow:var(--shadow-sm);
+  border:1px solid var(--line); text-align:left; display:flex; flex-direction:column; gap:2px; }
+.ms-ic { color:var(--celadon); width:22px; height:22px; margin-bottom:4px; }
+.ms-ic .ic { width:22px; height:22px; }
+.ms-val { font-size:25px; font-weight:800; color:var(--ink); font-family:var(--display); font-variant-numeric:tabular-nums; line-height:1; }
+.ms-label { color:var(--ink-soft); font-size:12px; font-weight:600; }
+
+/* ── печать-штамп 印章 (награда «выучено») ── */
+.seal-stamp {
+  display:inline-grid; place-items:center; width:64px; height:64px; border-radius:14px;
+  border:3px solid var(--seal); color:var(--seal); font-family:var(--serif); font-weight:900; font-size:30px;
+  background:var(--vermilion-soft); transform:rotate(-8deg);
+}
+.seal-pop { animation:sealPop .5s cubic-bezier(.2,.9,.3,1.4) both; }
+@keyframes sealPop { 0%{opacity:0; transform:rotate(-8deg) scale(2.2);} 60%{opacity:1;} 100%{opacity:1; transform:rotate(-8deg) scale(1);} }
+
+/* ── модалка (порядок черт) ── */
+.modal-overlay { position:fixed; inset:0; z-index:100; background:rgba(20,16,12,.55);
+  backdrop-filter:blur(5px); display:grid; place-items:center; padding:20px; animation:fadeUp .25s ease; }
+.modal { background:var(--surface); border-radius:var(--radius); padding:28px; box-shadow:var(--shadow);
+  position:relative; text-align:center; max-width:340px; border:1px solid var(--line); }
+.modal-title { font-family:var(--display); font-weight:700; margin-bottom:16px; }
+.modal-close { position:absolute; top:12px; right:12px; border:none; background:none; cursor:pointer;
+  color:var(--ink-soft); display:grid; place-items:center; width:32px; height:32px; border-radius:9px; transition:.2s; }
+.modal-close:hover { background:var(--vermilion-soft); color:var(--vermilion); }
+.modal-close .ic { width:20px; height:20px; }
+.stroke-box { width:240px; height:240px; margin:0 auto; background:
+  linear-gradient(var(--paper-2) 1px, transparent 1px) 0 0/100% 50%,
+  linear-gradient(90deg,var(--paper-2) 1px, transparent 1px) 0 0/50% 100%;
+  border:1.5px solid var(--grid-border); border-radius:12px; position:relative; }
+.stroke-fallback { font-family:var(--serif); font-size:160px; line-height:240px; }
+.modal-actions { display:flex; gap:10px; justify-content:center; align-items:center; margin-top:18px; }

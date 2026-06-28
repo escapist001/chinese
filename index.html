@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>中文 · Китайский для Жени</title>
+  <meta name="description" content="Личный интерактивный тренажёр китайского для Жени ❤️" />
+  <meta name="theme-color" content="#f1ede2" />
+
+  <!-- PWA: установка на телефон + офлайн -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="中文" />
+
+  <!-- тема применяется до отрисовки, чтобы не было «мигания» -->
+  <script>
+    try {
+      var st = JSON.parse(localStorage.getItem('cn_trainer_v2') || '{}');
+      var t = (st.settings && st.settings.theme) || 'light';
+      var m = location.search.match(/[?&]theme=(dark|light)/);
+      if (m) { // deep-link темы: сохраняем выбор, чтобы он не сбросился
+        t = m[1]; st.settings = st.settings || {}; st.settings.theme = t;
+        localStorage.setItem('cn_trainer_v2', JSON.stringify(st));
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;700;900&family=Spectral:ital,wght@0,400;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/views.css" />
+
+  <!-- Анимация порядка черт иероглифов (подключается из интернета) -->
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js" defer></script>
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true"><span>学</span><span>语</span><span>文</span></div>
+
+  <header class="topbar">
+    <a class="brand" href="#/home">
+      <span class="brand-zi">中文</span>
+      <span class="brand-text">Китайский<br><i>с нуля</i></span>
+    </a>
+    <nav class="nav" id="nav"></nav>
+    <div class="header-tools">
+      <span class="streak-badge" id="streakBadge" hidden></span>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Сменить тему (день / ночь)"></button>
+    </div>
+  </header>
+
+  <main id="app"><!-- сюда роутер вставляет экраны --></main>
+
+  <footer class="footer">学而时习之 · «Учись и повторяй изученное» · сделано с ❤️ для Жени</footer>
+
+  <!-- нижняя навигация для телефона -->
+  <nav class="bottom-nav" id="bottomNav" aria-label="Навигация"></nav>
+
+  <!-- данные -->
+  <script src="js/data/pinyin.js"></script>
+  <script src="js/data/lessons.js"></script>
+  <script src="js/data/drills.js"></script>
+  <script src="js/data/reference.js"></script>
+  <script src="audio/manifest.js"></script><!-- карта «текст → живой голос (MP3)» -->
+  <!-- ядро -->
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/icons.js"></script>
+  <script src="js/core/fx.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/speech.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/router.js"></script>
+  <!-- компоненты и экраны -->
+  <script src="js/components.js"></script>
+  <script src="js/views/home.js"></script>
+  <script src="js/views/lesson.js"></script>
+  <script src="js/views/tonestudio.js"></script>
+  <script src="js/views/minpairs.js"></script>
+  <script src="js/views/pinyin.js"></script>
+  <script src="js/views/quiz.js"></script>
+  <script src="js/views/review.js"></script>
+  <script src="js/views/practice.js"></script>
+  <script src="js/views/games.js"></script>
+  <script src="js/views/methodology.js"></script>
+  <script src="js/views/profile.js"></script>
+  <script src="js/views/personalize.js"></script>
+  <script src="js/views/extra.js"></script>
+  <!-- запуск -->
+  <script src="js/app.js"></script>
+
+  <!-- регистрация service worker (только на http/https, не на file://) -->
+  <script>
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
