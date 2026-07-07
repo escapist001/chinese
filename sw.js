@@ -4,7 +4,7 @@
      при онлайне всегда свежее (обновления видны сразу), офлайн — из кэша.
    • тяжёлое и неизменное (mp3/шрифты/иконки/CDN) — cache-first.
    ВАЖНО: при каждом релизе меняем VERSION — иначе старый кэш не очистится. */
-const VERSION = 'v5-2026-06-28';
+const VERSION = 'v6-2026-07-08';
 const CACHE = 'cn-trainer-' + VERSION;
 
 const SHELL = [
@@ -18,7 +18,7 @@ const SHELL = [
   'js/views/home.js', 'js/views/lesson.js', 'js/views/pinyin.js', 'js/views/tonestudio.js',
   'js/views/minpairs.js', 'js/views/quiz.js', 'js/views/review.js', 'js/views/practice.js',
   'js/views/games.js', 'js/views/methodology.js', 'js/views/profile.js', 'js/views/personalize.js',
-  'js/views/garden.js', 'js/views/etymology.js', 'js/views/extra.js', 'js/app.js',
+  'js/views/garden.js', 'js/views/etymology.js', 'js/views/write.js', 'js/views/extra.js', 'js/app.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
 ];
 

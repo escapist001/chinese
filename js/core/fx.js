@@ -157,5 +157,97 @@ CN.fx = (function () {
     });
   }
 
-  return { countUp, inkBurst, brushWrite, petals, morphHanzi, reduced };
+  // ── проявление секций по мере прокрутки (IntersectionObserver) ──
+  // Что уже в зоне видимости при заходе — раскрываем «лесенкой» сразу;
+  // что ниже сгиба — проявляется, когда доскроллишь. Уважает reduced-motion.
+  let _io = null;
+  function revealOnScroll(root) {
+    root = root || document.querySelector('#app .view');
+    if (!root) return;
+    const items = Array.from(root.children).filter(n => n.nodeType === 1);
+    if (!items.length) return;
+    if (reduced() || !('IntersectionObserver' in window)) { items.forEach(n => n.classList.add('reveal-in')); return; }
+
+    if (_io) _io.disconnect();
+    const vh = window.innerHeight || 800;
+    let shownAtStart = 0;
+    _io = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const n = e.target;
+        // элементы первого экрана — короткая «лесенка»; ниже — по одному при появлении
+        const delay = n.dataset.revIn === 'start' ? (parseInt(n.dataset.revI, 10) || 0) * 70 : 0;
+        setTimeout(() => n.classList.add('reveal-in'), delay);
+        obs.unobserve(n);
+      }
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+
+    items.forEach(n => {
+      n.classList.add('reveal');
+      const top = n.getBoundingClientRect().top;
+      if (top < vh * 0.9) { n.dataset.revIn = 'start'; n.dataset.revI = String(shownAtStart++); }
+      _io.observe(n);
+    });
+  }
+
+  // ── ripple: чернильная волна из точки клика (делегирование на всём документе) ──
+  function initRipple() {
+    document.addEventListener('pointerdown', (e) => {
+      if (reduced()) return;
+      const t = e.target.closest('.btn, .drill-card, .lesson-chip, .unit-check, .icon-btn');
+      if (!t) return;
+      const r = t.getBoundingClientRect();
+      const d = Math.max(r.width, r.height) * 2;
+      const ink = document.createElement('span');
+      ink.className = 'ripple-ink';
+      ink.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+      const pos = getComputedStyle(t).position;
+      if (pos === 'static') t.style.position = 'relative';
+      t.appendChild(ink);
+      ink.addEventListener('animationend', () => ink.remove());
+    }, { passive: true });
+  }
+
+  // ── 3D-наклон карточек за курсором (только устройства с мышью) ──
+  function bindTilt(root) {
+    if (reduced() || !window.matchMedia || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    (root || document).querySelectorAll('.drill-card, .stat-card, .garden-card, .wod-card, .name-card, .fortune-card')
+      .forEach(card => {
+        if (card._tilt) return; card._tilt = true;
+        card.style.transformStyle = 'preserve-3d';
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          card.style.transform = `perspective(700px) rotateX(${(-py * 5).toFixed(2)}deg) rotateY(${(px * 6).toFixed(2)}deg) translateY(-3px)`;
+        });
+        const reset = () => { card.style.transform = ''; };
+        card.addEventListener('pointerleave', reset);
+        card.addEventListener('pointercancel', reset);
+      });
+  }
+
+  // ── лёгкий параллакс фоновых иероглифов за курсором и скроллом ──
+  function initParallax() {
+    const layers = Array.from(document.querySelectorAll('.bg-decor span'));
+    if (!layers.length || reduced() || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    let mx = 0, my = 0, sy = 0, raf = 0;
+    const apply = () => {
+      raf = 0;
+      layers.forEach((el, i) => {
+        const k = (i + 1) * 6;
+        el.style.transform = `translate3d(${mx * k}px, ${my * k + sy * (i + 1) * 0.04}px, 0)`;
+      });
+    };
+    const req = () => { if (!raf) raf = requestAnimationFrame(apply); };
+    window.addEventListener('pointermove', (e) => {
+      mx = (e.clientX / window.innerWidth - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+      req();
+    }, { passive: true });
+    window.addEventListener('scroll', () => { sy = window.scrollY; req(); }, { passive: true });
+  }
+
+  return { countUp, inkBurst, brushWrite, petals, morphHanzi, reduced,
+           revealOnScroll, initRipple, bindTilt, initParallax };
 })();

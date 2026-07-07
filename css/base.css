@@ -124,6 +124,28 @@ main { position:relative; z-index:1; }
 .view { animation:fadeUp .5s cubic-bezier(.2,.7,.3,1) both; }
 @keyframes fadeUp { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;} }
 
+/* ============================================================
+   ПЕРЕХОДЫ МЕЖДУ ЭКРАНАМИ — View Transitions API.
+   Морфим только контент (#app); фон и шапка стабильны, без мигания.
+   forward = новый экран наплывает вперёд, back = отступает назад.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  main#app { view-transition-name: cn-main; }
+  /* фон/шапка (root) не участвуют в анимации — только контент */
+  ::view-transition-group(root) { animation-duration:.001ms; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation:none; mix-blend-mode:normal; }
+
+  ::view-transition-old(cn-main) { animation:cn-vt-out .24s cubic-bezier(.4,0,1,1) both; }
+  ::view-transition-new(cn-main) { animation:cn-vt-in .38s cubic-bezier(.2,.8,.3,1) both; }
+  /* «назад» — зеркальный зум, ощущение отступления к предыдущему */
+  [data-nav="back"] ::view-transition-old(cn-main) { animation-name:cn-vt-out-back; }
+  [data-nav="back"] ::view-transition-new(cn-main) { animation-name:cn-vt-in-back; }
+}
+@keyframes cn-vt-out      { to   { opacity:0; transform:scale(.985); } }
+@keyframes cn-vt-in       { from { opacity:0; transform:scale(1.012); } }
+@keyframes cn-vt-out-back { to   { opacity:0; transform:scale(1.015); } }
+@keyframes cn-vt-in-back  { from { opacity:0; transform:scale(.988); } }
+
 .view-h { font-family:var(--display); font-weight:800; font-size:clamp(30px,5vw,46px); letter-spacing:-.01em; line-height:1.05; }
 .view-lead { color:var(--ink-soft); font-size:18px; max-width:640px; margin-top:12px; line-height:1.6; }
 .section-h { font-family:var(--display); font-weight:700; font-size:clamp(22px,3.5vw,30px); margin:42px 0 18px;

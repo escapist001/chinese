@@ -30,6 +30,8 @@
   R.add('decks', 'decks');
   R.add('garden', 'garden');
   R.add('etymology', 'etymology');
+  R.add('write/:char', 'write');
+  R.add('write', 'write');
   R.add('search', 'search');
   R.add('settings', 'settings');
 
@@ -77,12 +79,15 @@
     if (CN.c) CN.c.toast('Новый уровень: ' + (e.detail.level || '') + '! 🎉', 'gold');
   });
 
-  // мягкое появление секций при заходе на экран
+  // проявление секций по мере прокрутки + 3D-наклон карточек за курсором
   document.addEventListener('cn:rendered', () => {
-    if (CN.fx && CN.fx.reduced && CN.fx.reduced()) return;
-    const secs = CN.u.$$('#app .view > section, #app .view > .name-card');
-    secs.forEach((s, i) => { s.classList.add('reveal'); setTimeout(() => s.classList.add('reveal-in'), 40 + i * 70); });
+    if (!CN.fx) return;
+    CN.fx.revealOnScroll(CN.u.$('#app .view'));
+    CN.fx.bindTilt(CN.u.$('#app'));
   });
+
+  // глобальные микровзаимодействия — навешиваются один раз
+  if (CN.fx) { CN.fx.initRipple(); CN.fx.initParallax(); }
 
   // бейдж серии дней в шапке — обновляем после каждой отрисовки
   function refreshStreak() {

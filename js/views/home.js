@@ -124,6 +124,7 @@ CN.views.home = function () {
     ['chart', 'Таблица пиньиня', '#/pinyintable'],
     ['book', 'Счётные слова', '#/measure'],
     ['sparkle', 'Иероглифы 字源', '#/etymology'],
+    ['brush', 'Пропись 书法', '#/write'],
     ['star', 'Сад знаний', '#/garden'],
   ];
   const matSec = el('section', { class: 'drill-hub' }, [ el('h2', { class: 'section-h' }, 'Материалы и тесты') ]);
